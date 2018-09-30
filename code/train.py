@@ -206,6 +206,25 @@ def parse_args():
 	return parser.parse_args()
 
 
+def load_pretrained_weights(net, weight_file_path):
+	ori_pretrained_dict = torch.load(weight_file_path)
+	model_dict = net.state_dict()
+	#pretrained_dict = {k: v for k, v in ori_pretrained_dict.items() if k in model_dict}
+	
+	import collections
+	pretrained_dict = collections.OrderedDict()
+
+	for k, v in ori_pretrained_dict.items():
+		if k in model_dict:
+			pretrained_dict[k] = v
+			print(k)
+
+	import pdb
+	pdb.set_trace()
+	model_dict.update(pretrained_dict)
+	net.load_state_dict(model_dict)
+
+
 if __name__ == '__main__':
 	args = parse_args()
 	gpu_id = args.gpu_id
@@ -223,6 +242,7 @@ if __name__ == '__main__':
 
 	net = SiamRPNBIG()
 	net.train().to(DEVICE)
+	load_pretrained_weights(net, "./SiamRPNBIG.model")
 	optimizer = torch.optim.Adam(net.parameters(), weight_decay=0.001, lr=0.001)
 
 	for i_ep in range(num_epoches):
