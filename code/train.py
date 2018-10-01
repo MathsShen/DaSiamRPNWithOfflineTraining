@@ -90,8 +90,7 @@ def gen_anchor_target(cls_output_shape, xs_shape, gt_boxes):
 	Produces anchor classification labels and bounding-box regression targets.
 	"""
 	anchor_scales = [1]
-	anchors = generate_anchors(ratios=[0.33, 0.5, 1, 2, 3],
-							   scales=np.array(anchor_scales))
+	anchors = generate_anchors(ratios=[0.33, 0.5, 1, 2, 3], scales=np.array(anchor_scales))
 	# anchors are in box format (x1, y1, x2, y2)
 
 	A = anchors.shape[0]
@@ -142,7 +141,7 @@ def gen_anchor_target(cls_output_shape, xs_shape, gt_boxes):
 
 	# overlaps between anchors and gt boxes
 	# overlaps.shape = (#total_anchors, #gts)
-	overlaps = bbox_overlaps( #################### cython utilities
+	overlaps = bbox_overlaps(
 		np.ascontiguousarray(anchors, dtype=np.float),
 		np.ascontiguousarray(gt_boxes, dtype=np.float))
 
@@ -200,8 +199,7 @@ def gen_anchor_target(cls_output_shape, xs_shape, gt_boxes):
 
 def parse_args():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--gpu_id', default=0,
-						help='GPU ID to use, e.g. \'0\'', type=int)
+	parser.add_argument('--gpu_id', default=0, help='GPU ID to use, e.g. \'0\'', type=int)
 
 	return parser.parse_args()
 
@@ -215,12 +213,10 @@ def load_pretrained_weights(net, weight_file_path):
 	pretrained_dict = collections.OrderedDict()
 
 	for k, v in ori_pretrained_dict.items():
-		if k in model_dict:
+		if k in model_dict and k.startswith('featureExtract'): # Only load the modified AlexNet weights
 			pretrained_dict[k] = v
-			print(k)
+			# print(k)
 
-	import pdb
-	pdb.set_trace()
 	model_dict.update(pretrained_dict)
 	net.load_state_dict(model_dict)
 

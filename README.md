@@ -1,14 +1,6 @@
 # DaSiamRPNWithOfflineTraining
 
-This repository adds offline training module to the original PyTorch implementation of DaSiamRPN.
-
-[**Distractor-aware Siamese Networks for Visual Object Tracking**](https://arxiv.org/pdf/1808.06048.pdf)  
-
-Zheng Zhu<sup>\*</sup>, Qiang Wang<sup>\*</sup>, Bo Li<sup>\*</sup>, Wei Wu, Junjie Yan, and Weiming Hu 
-
-*European Conference on Computer Vision (ECCV), 2018*
-
-
+This repository adds offline training module to the original PyTorch implementation of [DaSiamRPN](https://github.com/foolwood/DaSiamRPN).
 
 ## Introduction
 
@@ -26,3 +18,9 @@ GPU: NVIDIA GTX1060
 - pytorch == 0.3.1
 - numpy
 - opencv
+
+## Training Procedure
+`python code/train.py`
+The model will be saved in ./output/weights/
+
+
