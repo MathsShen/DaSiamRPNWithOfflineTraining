@@ -295,6 +295,8 @@ if __name__ == '__main__':
 
 		######## Save the current model
 		print("Saving model...")
+		if not os.path.exists("./output/weights"):
+			os.makedirs("./output/weights")
 		torch.save(net.state_dict(), f"./output/weights/dasiam_{i_ep}.pkl")
 
 	print("Training completed.")
