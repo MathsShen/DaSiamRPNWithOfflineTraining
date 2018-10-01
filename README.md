@@ -21,6 +21,7 @@ GPU: NVIDIA GTX1060
 
 ## Training Procedure
 `python code/train.py`
+
 The model will be saved in ./output/weights/
 
 
