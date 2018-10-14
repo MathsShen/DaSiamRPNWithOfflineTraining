@@ -9,8 +9,7 @@ This repository adds offline training module and testing module (including distr
 **DaSiamRPN** improves the performances of SiamRPN by (1) introducing an effective sampling strategy to control the imbalanced sample distribution, (2) designing a novel distractor-aware module to perform incremental learning, (3) making a long-term tracking extension. [ECCV2018](https://arxiv.org/pdf/1808.06048.pdf). (Slides at [VOT-18 Real-time challenge winners talk](https://drive.google.com/open?id=1dsEI2uYHDfELK0CW2xgv7R4QdCs6lwfr))
 
 Specifically, for (2), this repository implements ROI-align technique to achieve similarity matching between x and z. The insight of the ROI-align implementation can be seen from the figure below.
-![ROI-align](./ext/roi-align.png)
-<img src="./ext/roi-align.png" width="100" hegiht="30" align=center />
+<img src="./ext/roi-align.png" width="400" hegiht="800" align=center />
 
 ## Prerequisites
 
