@@ -42,11 +42,14 @@ class SiamRPNBIG(nn.Module):
         self.conv_cls2 = nn.Conv2d(feat_in, feature_out, 3)
         self.regress_adjust = nn.Conv2d(4*anchor, 4*anchor, 1)
 
+        #self.additional_conv = nn.Conv2d(512, 512, 6, padding=0)
+
         self.reg1_kernel = []
         self.cls1_kernel = []
 
     def forward(self, x):
         x_f = self.featureExtract(x)
+        #x_ff = self.additional_conv(x_f) # simply for the compatibility of shape matching
 
         batch_size = x_f.size(0)
         reg_conv_output = self.conv_reg2(x_f)
@@ -73,7 +76,7 @@ class SiamRPNBIG(nn.Module):
 			), \
                F.conv2d(self.conv_cls2(x_f), self.cls1_kernel)
         """
-        return reg_corr, cls_corr # of shape (50, 4K, 17, 17), (50, 2K, 17, 17)
+        return reg_corr, cls_corr, x_f # of shape (50, 4K, 17, 17), (50, 2K, 17, 17), (N, 22, 22, 512) ###################################
 	
 
     def temple(self, z):
@@ -84,3 +87,5 @@ class SiamRPNBIG(nn.Module):
 
         self.reg1_kernel = reg1_kernel_raw.view(-1, self.anchor*4, self.feature_out, kernel_size, kernel_size)#50, 4K, 512, 4, 4
         self.cls1_kernel = cls1_kernel_raw.view(-1, self.anchor*2, self.feature_out, kernel_size, kernel_size)#50, 2K, 512, 4, 4
+
+        return z_f # of shape (N, 6, 6, 512) #############################################################################################

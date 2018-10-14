@@ -85,6 +85,7 @@ def get_subwindow_tracking(im, pos, model_sz, original_sz, avg_chans, out_mode='
         im_patch_original = im[int(context_ymin):int(context_ymax + 1), int(context_xmin):int(context_xmax + 1), :]
 
     if not np.array_equal(model_sz, original_sz):
+        # resize the original patch into the size that is compatible to the network input
         im_patch = cv2.resize(im_patch_original, (model_sz, model_sz))  # zzp: use cv to get a better speed
     else:
         im_patch = im_patch_original

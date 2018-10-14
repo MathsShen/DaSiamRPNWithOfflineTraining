@@ -3,7 +3,7 @@ import os
 import torch
 
 from net import SiamRPNBIG
-from generate_anchors import generate_anchors
+from gen_all_anchors import generate_all_anchors
 from bbox_transform import bbox_transform
 from config import cfg
 
@@ -19,6 +19,7 @@ def bbox_overlaps(box, gt, phase='iou'):
 	gt : (K, 4) NDArray
 	return: (N, K) NDArray, stores Max(0, intersection/union) or Max(0, intersection/area_box)
 	"""
+	# Note that the inputs are in box format: x1, y1, x2, y2
 	
 	N = box.shape[0]
 	K = gt.shape[0]
@@ -89,51 +90,14 @@ def gen_anchor_target(cls_output_shape, xs_shape, gt_boxes):
 	Assign anchors to ground-truth targets. 
 	Produces anchor classification labels and bounding-box regression targets.
 	"""
-	anchor_scales = [1]
-	anchors = generate_anchors(ratios=[0.33, 0.5, 1, 2, 3], scales=np.array(anchor_scales))
-	# anchors are in box format (x1, y1, x2, y2)
-
-	A = anchors.shape[0]
-	feat_stride = 255 // 17
-
-	allowed_border = 0
 	height, width = cls_output_shape
+	anchors, A = generate_all_anchors(cls_output_shape, xs_shape)
+	# anchors are in format (x1, y1, x2, y2)
 
 	labels = np.zeros((1, 1, A*height, width))
 	bbox_targets = np.zeros((1, 4*A, height, width))
 	bbox_inside_weights = np.zeros((1, 4*A, height, width))
 	bbox_outsied_weights = np.zeros((1, 4*A, height, width))
-
-	sr_size = xs_shape
-
-	# 1. Generate proposals from bbox deltas and shifted anchors
-	shift_x = np.arange(0, width) * feat_stride
-	shift_y = np.arange(0, height) * feat_stride
-	shift_x, shift_y = np.meshgrid(shift_x, shift_y)
-	shifts = np.vstack((shift_x.ravel(),
-						shift_y.ravel(),
-						shift_x.ravel(),
-						shift_y.ravel())).transpose()
-
-	# 2. Add K anochors (1, A, 4) to cell K shifts (K, 1, 4) 
-	#	 to get shift anchors (K, A, 4) and reshape to (K*A, 4) shifted anchors
-	K = shifts.shape[0]
-	all_anchors = (anchors.reshape((1, A, 4))) + shifts.reshape((1, K, 4)).transpose((1, 0, 2))
-
-	all_anchors = all_anchors.reshape((K*A, 4))
-
-	# total number of anchors == A * height * width, 
-	# where height and width are the size of conv feature map
-	total_anchors = int(K*A)
-
-	# Only keep anchors inside the image
-	inds_inside = np.where(
-		(all_anchors[:, 0] >= -allowed_border) &
-		(all_anchors[:, 1] >= -allowed_border) &
-		(all_anchors[:, 2] < sr_size[1] + allowed_border) &
-		(all_anchors[:, 3] < sr_size[0] + allowed_border)
-	)[0]
-	anchors = all_anchors[inds_inside, :]
 
 	# label: 1 is positive, 0 is negative, -1 is don't care
 	labels = np.empty((len(inds_inside), ), dtype=np.float32)

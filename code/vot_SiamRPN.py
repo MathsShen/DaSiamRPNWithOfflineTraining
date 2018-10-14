@@ -46,7 +46,8 @@ while True:
         break
     im = cv2.imread(image_file)  # HxWxC
     state = SiamRPN_track(state, im)  # track
-    res = cxy_wh_2_rect(state['target_pos'], state['target_sz'])
 
+    # convert cx, cy, w, h into rect
+    res = cxy_wh_2_rect(state['target_pos'], state['target_sz'])
     handle.report(Rectangle(res[0], res[1], res[2], res[3]))
 
