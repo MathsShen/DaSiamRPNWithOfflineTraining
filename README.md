@@ -30,5 +30,5 @@ The model will be saved in ./output/weights/
 `python code/test.py`
 
 ## Postscript
-Currently, this repo remains under construction, meaning that its effectiveness is not guaranteed. But one can still get some insights from reading this repo. That is exactly what it really matters. However, more is coming in the immediate future, including: (1) the sampling strategy to control the imbalanced sample distribution and (2) other implementation details not specified clearly in the related paper.
+Currently, this repo remains under construction, meaning that its effectiveness is not guaranteed. But one can still get some insights from reading this repo, including myself. And that is exactly what it really matters. However, more is coming in the immediate future, including: (1) the sampling strategy to control the imbalanced sample distribution and (2) other implementation details not specified clearly in the related paper.
 
