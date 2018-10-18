@@ -78,7 +78,8 @@ def tracker_eval(net, x_crop, target_pos, target_sz, window, scale_z, p):
     delta[1, :] = delta[1, :] * p.anchors[:, 3] + p.anchors[:, 1]
     delta[2, :] = np.exp(delta[2, :]) * p.anchors[:, 2]
     delta[3, :] = np.exp(delta[3, :]) * p.anchors[:, 3]
-
+    
+    '''
     def change(r):
         return np.maximum(r, 1./r)
 
@@ -91,6 +92,7 @@ def tracker_eval(net, x_crop, target_pos, target_sz, window, scale_z, p):
         pad = (wh[0] + wh[1]) * 0.5
         sz2 = (wh[0] + pad) * (wh[1] + pad)
         return np.sqrt(sz2)
+    '''
 
     # size penalty
     s_c = change(sz(delta[2, :], delta[3, :]) / (sz_wh(target_sz)))  # scale penalty
@@ -152,6 +154,7 @@ def tracker_eval_distractor_aware(x_crop, target_sz, scale_z, state):
         ) # in bbx format of (x, y, w, h)
     dets[:, 2] = dets[:, 0] + dets[:, 2] - 1
     dets[:, 3] = dets[:, 1] + dets[:, 3] - 1
+
     nms_indices_kept = py_nms.py_nms(dets, thresh=0.9) # now dets is in box format
     # dets_kept = dets[nums_ind_kept] # (N, 4+1)
     # print(dets.astype(int))
@@ -281,8 +284,8 @@ def tracker_eval_distractor_aware(x_crop, target_sz, scale_z, state):
 
 
 def SiamRPN_init(im, target_pos, target_sz, net):
-    # target_pos = cx, cy
-    # target_sz = w, h
+    ## target_pos is (cx, cy)
+    ## target_sz is (w, h)
 
     state = dict()
     p = TrackerConfig()
@@ -297,8 +300,7 @@ def SiamRPN_init(im, target_pos, target_sz, net):
     p.delta_score_size = int((p.instance_size-p.exemplar_size)/p.total_stride+1) # size of the last feature map, expected to be 17
 
     # all anchors of each aspect ratio and scale at each location are generated.
-    #p.anchors = generate_anchor(p.total_stride, p.scales, p.ratios, p.score_size)
-    p.anchors = generate_all_anchors((p.delta_score_size, p.delta_score_size), 
+    p.anchors, _ = generate_all_anchors((p.delta_score_size, p.delta_score_size), 
                                      (p.instance_size, p.instance_size))
     # of shape (dropping from 2420 down to 433, 4)
     
@@ -312,7 +314,7 @@ def SiamRPN_init(im, target_pos, target_sz, net):
     z_crop = get_subwindow_tracking(im, target_pos, p.exemplar_size, s_z, avg_chans)
 
     z = Variable(z_crop.unsqueeze(0))
-    template_feat = net.temple(z.cuda())
+    template_feat = net.template(z.cuda())
 
     if p.windowing == 'cosine':
         # return the outer product of two hanning vectors, which is a matrix of the same size as the feature map of search region

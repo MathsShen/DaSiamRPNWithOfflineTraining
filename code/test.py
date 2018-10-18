@@ -32,7 +32,7 @@ class Tracker(object):
     def on_tracking(self):        
         # warm up
         for i in range(10):
-            self.net.temple(torch.autograd.Variable(torch.FloatTensor(1, 3, 127, 127)).cuda())
+            self.net.template(torch.autograd.Variable(torch.FloatTensor(1, 3, 127, 127)).cuda())
             self.net(torch.autograd.Variable(torch.FloatTensor(1, 3, 255, 255)).cuda())
 
         i = 1

@@ -79,7 +79,7 @@ class SiamRPNBIG(nn.Module):
         return reg_corr, cls_corr, x_f # of shape (50, 4K, 17, 17), (50, 2K, 17, 17), (N, 22, 22, 512) ###################################
 	
 
-    def temple(self, z):
+    def template(self, z):
         z_f = self.featureExtract(z)
         reg1_kernel_raw = self.conv_reg1(z_f)
         cls1_kernel_raw = self.conv_cls1(z_f)

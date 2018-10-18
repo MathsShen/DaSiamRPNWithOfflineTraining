@@ -16,10 +16,16 @@ Specifically, for (2), this repository implements ROI-align technique to achieve
 CPU: Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz
 GPU: NVIDIA GTX1060
 
-- python2.7
-- pytorch == 0.3.1
+- python3.6
+- pytorch == 0.4.0
 - numpy
 - opencv
+- easydict
+
+## Data Preparation
+One can prepare his own dataset for training and testing DaSiamRPN. Putting aside the positive and negative pairing for distractor-aware training as specified in the paper, each training and testing sequence, say Basketball, is organized in a folder "Basketball" in which "Basketball_gt.txt" and a sub-folder "imgs" are stored. The gt files have lines of groundtruths in format of (x, y, w, h). In "imgs" folders are frames named in format "xxxx.jpg", (e.g. 0001.jpg-9999.jpg).
+
+Besides the data, one should also prepare the corresponding list formatted as in ./data/whole_list.txt, where each row consists of the path of a sequence folder and the number of total frames of the sequence.
 
 ## Training Procedure
 `python code/train.py`
@@ -31,4 +37,6 @@ The model will be saved in ./output/weights/
 
 ## Postscript
 Currently, this repo remains under construction, meaning that its effectiveness is not guaranteed. But one can still get some insights from reading this repo, including myself. And that is exactly what really matters. However, more is coming in the immediate future, including: (1) the sampling strategy to control the imbalanced sample distribution and (2) other implementation details not specified clearly in the related paper.
+
+To better this repo, I am looking forward to your suggestion. ^_^
 

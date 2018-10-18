@@ -2,8 +2,7 @@ import numpy as np
 from generate_anchors import generate_anchors
 
 def generate_all_anchors(cls_output_shape, xs_shape):
-    anchor_scales = [8, ] ###########################################################################################
-    anchors = generate_anchors(ratios=[0.33, 0.5, 1, 2, 3], scales=np.array(anchor_scales))
+    anchors = generate_anchors(ratios=[0.33, 0.5, 1, 2, 3], scales=np.array([8, ]))
     # anchors are in box format (x1, y1, x2, y2)
 
     A = anchors.shape[0]
@@ -30,12 +29,12 @@ def generate_all_anchors(cls_output_shape, xs_shape):
 
     all_anchors = all_anchors.reshape((K*A, 4)) # of shape (5x22x22, 4)
 
+    """
     # total number of anchors == A * height * width, 
     # where height and width are the size of conv feature map
     total_anchors = int(K*A)
 
     # Only keep anchors inside the image
-    """
     inds_inside = np.where(
         (all_anchors[:, 0] >= -allowed_border) &
         (all_anchors[:, 1] >= -allowed_border) &
@@ -46,7 +45,7 @@ def generate_all_anchors(cls_output_shape, xs_shape):
     # after keeping-inside, #anchors drops from 2420 down to 433
     """
 
-    return all_anchors # anchors
+    return all_anchors, A  # anchors
 
 if __name__ == '__main__':
     sr_shape = (255, 255)
