@@ -195,6 +195,8 @@ def load_pretrained_weights(net, weight_file_path):
 
 
 if __name__ == '__main__':
+    torch.backends.cudnn.enabled=False # to temporally remove the issue "illegal access to memory"
+
     args = parse_args()
     gpu_id = args.gpu_id
     if gpu_id is None:
@@ -248,6 +250,10 @@ if __name__ == '__main__':
 
                 mask = np.ones_like(rpn_labels)
                 mask[np.where(rpn_labels==-1)] = 0 # mask where we 'don't care'
+                
+                #import pdb
+                #pdb.set_trace()
+
                 mask = torch.from_numpy(mask).to(DEVICE)
                 cls_loss = torch.sum(cls_loss * mask) / torch.sum(mask)
 
